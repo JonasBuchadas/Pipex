@@ -1,8 +1,7 @@
 #include "pipex.h"
 
-static void	valid_command(t_pipex *p, int argc, char **argv);
-static void	check_path_variable(t_pipex *p, char **args, char *err);
-static void	check_command_paths(t_pipex *p, int argc, char **argv, char **envp);
+static void here_doc(t_pipex *p, int file);
+static void	command_paths(t_pipex *p, char **envp);
 
 void	check_pipe_mode(t_pipex *p, int argc, char **argv, char **envp)
 {
@@ -16,22 +15,53 @@ void	check_pipe_mode(t_pipex *p, int argc, char **argv, char **envp)
 	p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (p->fd_out == ERROR)
 		usage_error(p, "OPENING OUTPUT FILE", true);
-	check_command_paths(p, argc, argv, envp);
+	command_paths(p, envp);
 }
 
 void	check_heredoc_mode(t_pipex *p, int argc, char **argv, char **envp)
 {
-	p->fd_input = open("inputstream.txt", O_WRONLY | O_CREAT, 0777);
-	if (p->fd_input == ERROR)
+	int file;
+
+	file = open("inputstream.txt", O_WRONLY | O_CREAT, 0777);
+	if (file == ERROR)
 		usage_error(p, "OPENING INPUTSTREAM", true);
 	p->fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0777);
 	if (p->fd_out == ERROR)
 		usage_error(p, "OPENING OUTPUT FILE", true);
 	p->limiter = ft_strdup(argv[2]);
-	check_command_paths(p, argc, argv, envp);
+	here_doc(p, file);
+	close(file);
+	p->fd_input = open("inputstream.txt", O_RDONLY);
+	if (p->fd_input < 0)
+		program_errors(p, "HEREDOC", true);
+	command_paths(p, envp);
 }
 
-static void	check_command_paths(t_pipex *p, int argc, char **argv, char **envp)
+static void here_doc(t_pipex *p, int file)
+{
+	char	*line;
+	char	*tmp;
+
+	tmp = ft_strjoin(p->limiter, "\n");
+	while (1)
+	{
+		ft_putendl_fd("pipe heredoc> ", 1);
+		line = ft_get_next_line(STDIN_FILENO);
+		if (line)
+		{
+			if (ft_strequal(tmp, line))
+					break ;
+			ft_putstr_fd(line, file);
+			ft_strdel(&line);
+		}
+		else
+			program_errors(p, "HEREDOC", true);
+	}
+	ft_strdel(&tmp);
+	ft_strdel(&line);
+}
+
+static void	command_paths(t_pipex *p, char **envp)
 {
 	int		i;
 
@@ -42,9 +72,8 @@ static void	check_command_paths(t_pipex *p, int argc, char **argv, char **envp)
 			break ;
 	}
 	p->env_paths = ft_split(envp[i] + 5, ':');
-	valid_command(p, argc, argv);
 }
-
+/*
 static void	valid_command(t_pipex *p, int argc, char **argv)
 {
 	char	**cmd_args;
@@ -93,3 +122,4 @@ static void	check_path_variable(t_pipex *p, char **args, char *err)
 		usage_error(p, "EXIT", true);
 	}
 }
+*/

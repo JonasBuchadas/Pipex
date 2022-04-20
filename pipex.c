@@ -1,8 +1,9 @@
 #include "pipex.h"
 
 static void check_input(t_pipex *p, int argc, char **argv, char **envp);
-//static void	here_doc(t_pipex *p);
-//static void	write2pipe(t_pipex *p, int fd[2]);
+static void	pipe_mode(t_pipex *p);
+static void	heredoc_mode(t_pipex *p);
+static void child_cmd(t_pipex *p, int cmd_index);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -10,11 +11,10 @@ int	main(int argc, char **argv, char **envp)
 
 	init_data(&p, argv);
 	check_input(&p, argc, argv, envp);
-//	get_commands(&p);
-//	if (p.mode == PIPE)
-//		pipe_mode(&p);
-//	else if (p.mode == HERE_DOC)
-//		here_doc_mode(&p);
+	if (p.mode == PIPE)
+		pipe_mode(&p);
+	else if (p.mode == HERE_DOC)
+		heredoc_mode(&p);
 	clear_data(&p);
 	exit(EXIT_SUCCESS);
 }
@@ -37,50 +37,50 @@ static void	check_input(t_pipex *p, int argc, char **argv, char **envp)
 	p->argv = argv;
 	p->envp = envp;
 }
-/*
-static void	here_doc(t_pipex *p)
-{
-	int	pid;
-	int	fd[2];
 
-	if (pipe(fd) == -1)
-		program_errors(p, "Pipe", true);
+static void	pipe_mode(t_pipex *p)
+{
+	int	cmd_index;
+
+	cmd_index = PIPE;
+	while (cmd_index < p->argc - 2)
+		child_cmd(p, cmd_index++);
+	dup2_util(p, p->fd_out, STDOUT_FILENO);
+	exec_cmd(p, p->argv[p->argc - 2]);		
+}
+
+static void	heredoc_mode(t_pipex *p)
+{
+	int	cmd_index;
+
+	cmd_index = HERE_DOC;
+	while (cmd_index < p->argc - 2)
+		child_cmd(p, cmd_index++);
+	dup2_util(p, p->fd_out, STDOUT_FILENO);
+	exec_cmd(p, p->argv[p->argc - 2]);		
+}
+
+static void child_cmd(t_pipex *p, int cmd_index)
+{
+	pid_t	pid;
+	int		fd[2];
+
+	open_pipe(p, fd);
 	pid = fork();
 	if (pid == -1)
-		program_errors(p, "Fork", true);
-	if (pid == 0)
-		write2pipe(p, fd);
-	else
+		program_errors(p, "FORK", true);
+	if (pid == CHILD_PROCESS)
 	{
-		dup2_util(p, fd[READ_END], STDIN_FILENO);
+		if (p->fd_input == -1)
+		{
+			close_pipe(fd);
+			program_errors(p, "STDIN", true);
+		}
+		dup2_util(p, fd[1], STDOUT_FILENO);
 		close_pipe(fd);
-		waitpid(pid, NULL, 0);
+		exec_cmd(p, p->argv[cmd_index]);
 	}
+	dup2_util(p, fd[0], STDIN_FILENO);
+	close_pipe(fd);
+	waitpid(-1, NULL, WNOHANG);
 }
-
-static void	write2pipe(t_pipex *p, int fd[2])
-{
-	size_t	limiter_length;
-	char	*line;
-
-	limiter_length = ft_strlen(p->limiter);
-	while (1)
-	{
-		ft_putstr_fd("pipex here_doc> ", 1);
-		line = ft_get_next_line(STDIN_FILENO);
-		if (!line)
-		{
-			close_pipe(fd);
-			program_errors(p, "HereDoc", true);
-		}
-		if (line[limiter_length] == '\n' && p->limiter && \
-			!ft_strncmp(line, p->limiter, limiter_length))
-		{
-			close_pipe(fd);
-			exit(EXIT_SUCCESS);
-		}
-		ft_putstr_fd(line, fd[1]);
-		ft_strdel(&line);
-	}
-}
-*/

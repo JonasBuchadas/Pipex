@@ -36,13 +36,11 @@ void	clear_data(t_pipex *p)
 	close_pipe(p->pipe);
 	if (p->limiter)
 		ft_strdel(&p->limiter);
-	/*
 	if (access("inputstream.txt", X_OK) != -1)
 	{
 		if (unlink("inputstream.txt") == ERROR)
-			usage_error(p, "UNLINKING INPUTSTREAM", TRUE);
+			usage_error(p, "UNLINKING INPUTSTREAM", false);
 	}
-	*/
 }
 
 void	open_pipe(t_pipex *p, int fd[2])

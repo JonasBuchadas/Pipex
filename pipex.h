@@ -43,5 +43,6 @@ void	clear_data(t_pipex *p);
 void	open_pipe(t_pipex *p, int fd[2]);
 void	close_pipe(int *pipe);
 void	dup2_util(t_pipex *p, int fd1, int fd2);
+void    exec_cmd(t_pipex *p, char *full_cmd);
 
 #endif

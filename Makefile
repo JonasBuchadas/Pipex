@@ -7,7 +7,8 @@ NAME=		pipex
 SRCS=		pipex.c \
 			utils.c \
 			error_handling.c \
-			check_modes.c
+			check_modes.c \
+			cmd_exec.c
 
 OBJS=		$(SRCS:.c=.o)
 
