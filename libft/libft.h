@@ -93,7 +93,7 @@ char	*ft_get_next_line(int fd);
 void	ft_sort_int_tab(int *tab, int size);
 int		ft_min_int(int n, ...);
 int		ft_max_int(int n, ...);
-bool    ft_strequal(char *s1, char *s2);
+bool	ft_strequal(char *s1, char *s2);
 void	ft_strarray_clear(char ***str_array);
 void	ft_strdel(char **str);
 void	ft_memdel(void **mem);

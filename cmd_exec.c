@@ -1,45 +1,27 @@
 #include "pipex.h"
 
-static char	*parse_path(t_pipex *p, char *cmd);
 static char	*find_command(char *cmd, char **paths);
 
-void    exec_cmd(t_pipex *p, char *full_cmd)
+void	child_process(t_pipex *p, int cmd)
 {
-	char	**cmd;
-	char	*full_path;
-
-	if (!*full_cmd)
-		program_errors(p, "NO CMD", true);
-	cmd = ft_split(full_cmd, ' ');
-	if (!cmd)
-		program_errors(p, "SPLIT", true);
-	if (cmd[0] && ft_strchr(cmd[0], '/'))
-		full_path = cmd[0];
-	else
-		full_path = parse_path(p, cmd[0]);
-	if (access(full_path, F_OK) == ERROR)
-			program_errors(p, "NO CMD", true);
-	else
+	p->pid_cmd = fork();
+	if (p->pid_cmd == ERROR)
+		program_errors(p, "FORK", true);
+	if (p->pid_cmd == CHILD_PROCESS)
 	{
-	if (execve(full_path, cmd, p->envp) == ERROR)
-		program_errors(p, "NO CMD", true);
+		if (cmd == 0)
+			dup2_util(p, p->fd_input, p->pipes[0 + WRITE_END]);
+		else if (cmd == p->n_cmds - 1)
+			dup2_util(p, p->pipes[2 * cmd - 2], p->fd_output);
+		else
+			dup2_util(p, p->pipes[2 * cmd - 2], p->pipes[2 * cmd + WRITE_END]);
+		close_pipes(p);
+		p->cmd_args = ft_split(p->argv[p->mode + cmd], ' ');
+		p->cmd = find_command(p->cmd_args[0], p->env_paths);
+		if (!p->cmd || access(p->cmd, F_OK) == ERROR)
+			program_errors(p, "NO CMD", true);
+		execve(p->cmd, p->cmd_args, p->envp);
 	}
-}
-
-static char	*parse_path(t_pipex *p, char *cmd)
-{
-	char	**paths;
-	size_t	i;
-
-	i = 0;
-	while (p->envp[i] && ft_strncmp(p->envp[i], "PATH=", 5))
-		i++;
-	if (!p->envp[i])
-		return (NULL);
-	paths = ft_split(p->envp[i] + 5, ':');
-	if (!paths)
-		program_errors(p, "SPLIT", true);
-	return (find_command(cmd, paths));
 }
 
 static char	*find_command(char *cmd, char **paths)
