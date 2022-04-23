@@ -20,9 +20,18 @@ int	main(int argc, char **argv, char **envp)
 
 static void	init_mode(t_pipex *p, int argc, char **argv, char **envp)
 {
-	if (argc != 5)
-		usage_pipex_error(p, "USAGE", true);
-	init_pipe_mode(p, argc, argv, envp);
+	if (p->mode == HERE_DOC)
+	{
+		if (argc != 6)
+			usage_error(p, "HERE_DOC MODE USAGE", true);
+		init_heredoc_mode(p, argc, argv, envp);
+	}
+	else
+	{
+		if (argc < 5)
+			usage_error(p, "USAGE", true);
+		init_pipe_mode(p, argc, argv, envp);
+	}
 	p->argc = argc;
 	p->argv = argv;
 	p->envp = envp;

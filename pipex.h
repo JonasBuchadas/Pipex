@@ -39,6 +39,7 @@ void	init_pipe_mode(t_pipex *p, int argc, char **argv, char **envp);
 void	init_heredoc_mode(t_pipex *p, int argc, char **argv, char **envp);
 void	clear_data(t_pipex *p);
 void	usage_error(t_pipex *p, char *usage_name, bool stop);
+void	usage_pipex_error(t_pipex *p, char *usage_name, bool stop);
 void	program_errors(t_pipex *p, char *errname, bool stop);
 void	clear_data(t_pipex *p);
 void	open_pipes(t_pipex *p);

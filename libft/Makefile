@@ -1,6 +1,6 @@
 CC=		gcc
 
-CFLAGS=	-Wall -Werror -Wextra -g
+CFLAGS=	-Wall -Werror -Wextra
 
 NAME=	libft.a
 
@@ -78,7 +78,7 @@ bonus: $(OBJS) $(OBJ_BONUS) $(OBJ_CLISTS)
 	@ar rcs $(NAME) $^ 
 
 $(NAME): $(OBJS) 
-	@ar rcs $(NAME) $(OBJS)
+	@ar rcs $(NAME) $^
 
 $(OBJS): $(SRCS) 
 	@$(CC) $(CFLAGS) -c $^

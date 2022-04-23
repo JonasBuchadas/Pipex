@@ -1,50 +1,54 @@
 CC=			gcc
 
-CFLAGS=		-Wall -Werror -Wextra -g
+CFLAGS=		-Wall -Werror -Wextra
 
 NAME=		pipex
 
-SRCS=		pipex.c \
-			utils.c \
-			error_handling.c \
+SRC_NAME=	$(NAME).c
+
+SRC_BONUS=	$(NAME)_bonus.c
+
+SRCS=		utils.c \
 			check_modes.c \
-			cmd_exec.c
+			cmd_exec.c \
+			error_handling.c \
+
+OBJ_NAME=	$(SRC_NAME:.c=.o)
+
+OBJ_BONUS=	$(SRC_BONUS:.c=.o)
 
 OBJS=		$(SRCS:.c=.o)
 
-OBJ_BOTH=	$(SRC_BOTH:.c=.o)
-
 LIBFT_DIR=	./libft/
 
-LIBFTMAKE=	make bonus --silent -C $(LIBFT_DIR)
+LIBFTMAKE=  make bonus --silent -C $(LIBFT_DIR)
 
-LIBFT=		-L$(LIBFT_DIR) -lft
+LIBFT=      -L$(LIBFT_DIR) -lft
 
 INC=		-I $(LIBFT_DIR)
 
-all: $(NAME)
-
-$(BONUS): $(OBJ_BONUS) $(OBJ_BOTH) $(LIBFT)
-	@$(CC) $(CFLAGS) $^ $(INC) -o $@
-	@echo -e "$(GREEN)$@ Program created$(DEFAULT)"
-
-$(NAME): $(OBJS) 
+all: $(OBJ_NAME) $(OBJS) 
 	@$(LIBFTMAKE)
-	@$(CC) $(CFLAGS) $^ $(INC) $(LIBFT) -o $@
-	@echo -e "$(GREEN)$@ Program created$(DEFAULT)"
+	@$(CC) $(CFLAGS) $^ $(INC) $(LIBFT) -o $(NAME)
+	@echo -e "$(GREEN)$(NAME) Program created$(DEFAULT)"
 
-$(OBJS): $(SRCS) 
+bonus: $(OBJ_BONUS) $(OBJS)
+	@$(LIBFTMAKE)
+	@$(CC) $(CFLAGS) $^ $(INC) $(LIBFT) -o $(NAME)
+	@echo -e "$(GREEN)$(NAME) Program created$(DEFAULT)"
+
+$(OBJ_NAME): $(SRC_NAME) 
 	@$(CC) $(CFLAGS) $(INC) -c $^
 
 $(OBJ_BONUS): $(SRC_BONUS)
 	@$(CC) $(CFLAGS) $(INC) -c $^
 
-$(OBJ_BOTH): $(SRC_BOTH)
+$(OBJS): $(SRCS) 
 	@$(CC) $(CFLAGS) $(INC) -c $^
 
 clean:
-	@make clean --silent -C $(LIBFT_DIR)
-	@rm -f $(OBJS) $(OBJ_BONUS) $(OBJ_BOTH)
+	@make $@ --silent -C $(LIBFT_DIR)
+	@rm -f $(OBJ_NAME) $(OBJS) $(OBJ_BONUS)
 	@echo -e "$(RED)Object files removed$(DEFAULT)"
 
 fclean: clean
@@ -54,6 +58,8 @@ fclean: clean
 	@echo -e "$(RED)$(NAME) Program removed$(DEFAULT)"
 
 re: fclean all
+
+.PHONY:	all clean fclean bonus re
 
 GREEN= \033[1;32m
 RED= \033[1;31m
