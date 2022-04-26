@@ -1,58 +1,73 @@
+### COMPILATION ###
 CC=			gcc
-
 CFLAGS=		-Wall -Werror -Wextra
 
+### EXECUTABLE ###
 NAME=		pipex
 
+### PATHS ###
+LIBFT_PATH=	./libft/
+INCL_PATH=	incl/
+SRCS_PATH=	srcs/
+OBJS_PATH=	objs/
+
+### SOURCE FILES ###
 SRC_NAME=	$(NAME).c
-
 SRC_BONUS=	$(NAME)_bonus.c
-
 SRCS=		utils.c \
 			check_modes.c \
 			cmd_exec.c \
-			error_handling.c \
+			error_handling.c 
+SRCS_NAME=	$(addprefix $(SRCS_PATH), $(SRC_NAME) $(SRCS))
+SRCS_BONUS=	$(addprefix $(SRCS_PATH), $(SRC_BONUS) $(SRCS))
 
+### OBJECT FILES ### 
 OBJ_NAME=	$(SRC_NAME:.c=.o)
-
 OBJ_BONUS=	$(SRC_BONUS:.c=.o)
-
 OBJS=		$(SRCS:.c=.o)
+OBJS_NAME=	$(addprefix $(OBJS_PATH), $(OBJ_NAME) $(OBJS))
+OBJS_BONUS=	$(addprefix $(OBJS_PATH), $(OBJ_BONUS) $(OBJS))
 
-LIBFT_DIR=	./libft/
+### LIBFT ###
+LIBFTMAKE=  make bonus --silent -C $(LIBFT_PATH)
+LIBFT=      -L$(LIBFT_PATH) -lft
 
-LIBFTMAKE=  make bonus --silent -C $(LIBFT_DIR)
+### INCLUDES ###
+INC=		-I $(LIBFT_PATH)$(INCL_PATH) -I $(INCL_PATH)
 
-LIBFT=      -L$(LIBFT_DIR) -lft
+### COLOURS ###
+GREEN= \033[1;32m
+RED= \033[1;31m
+DEFAULT= \033[0m
 
-INC=		-I $(LIBFT_DIR)
+### IMPLICT RULES ###
+%.o: %.c
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
-all: $(OBJ_NAME) $(OBJS) 
+$(OBJS_PATH)%.o: $(SRCS_PATH)%.c
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+
+### ACTIVE RULES ###
+all: $(OBJS_PATH) $(OBJS_NAME)
 	@$(LIBFTMAKE)
-	@$(CC) $(CFLAGS) $^ $(INC) $(LIBFT) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS_NAME) $(INC) $(LIBFT) -o $(NAME)
 	@echo -e "$(GREEN)$(NAME) Program created$(DEFAULT)"
 
-bonus: $(OBJ_BONUS) $(OBJS)
+bonus: $(OBJS_PATH) $(OBJS_BONUS)
 	@$(LIBFTMAKE)
-	@$(CC) $(CFLAGS) $^ $(INC) $(LIBFT) -o $(NAME)
+	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(INC) $(LIBFT) -o $(NAME)
 	@echo -e "$(GREEN)$(NAME) Program created$(DEFAULT)"
 
-$(OBJ_NAME): $(SRC_NAME) 
-	@$(CC) $(CFLAGS) $(INC) -c $^
-
-$(OBJ_BONUS): $(SRC_BONUS)
-	@$(CC) $(CFLAGS) $(INC) -c $^
-
-$(OBJS): $(SRCS) 
-	@$(CC) $(CFLAGS) $(INC) -c $^
-
+$(OBJS_PATH):
+	@mkdir -p $@
+	
 clean:
-	@make $@ --silent -C $(LIBFT_DIR)
-	@rm -f $(OBJ_NAME) $(OBJS) $(OBJ_BONUS)
+	@make $@ --silent -C $(LIBFT_PATH)
+	@rm -rf $(OBJS_PATH)
 	@echo -e "$(RED)Object files removed$(DEFAULT)"
 
 fclean: clean
-	@make fclean --silent -C $(LIBFT_DIR)
+	@make $@ --silent -C $(LIBFT_PATH)
 	@echo -e "$(RED)Libft removed$(DEFAULT)"
 	@rm -f $(NAME)
 	@echo -e "$(RED)$(NAME) Program removed$(DEFAULT)"
@@ -60,7 +75,3 @@ fclean: clean
 re: fclean all
 
 .PHONY:	all clean fclean bonus re
-
-GREEN= \033[1;32m
-RED= \033[1;31m
-DEFAULT= \033[0m

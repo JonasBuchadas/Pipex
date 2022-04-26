@@ -46,7 +46,7 @@ static void	here_doc(t_pipex *p, int file)
 	while (1)
 	{
 		ft_putendl_fd("pipe heredoc> ", 1);
-		line = ft_get_next_line(STDIN_FILENO);
+		line = get_next_line(STDIN_FILENO);
 		if (line)
 		{
 			if (ft_strequal(tmp, line))
