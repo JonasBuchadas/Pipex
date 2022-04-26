@@ -45,7 +45,6 @@ static void	here_doc(t_pipex *p, int file)
 	tmp = ft_strjoin(p->limiter, "\n");
 	while (1)
 	{
-		ft_putendl_fd("pipe heredoc> ", 1);
 		line = get_next_line(STDIN_FILENO);
 		if (line)
 		{
@@ -55,7 +54,11 @@ static void	here_doc(t_pipex *p, int file)
 			ft_strdel(&line);
 		}
 		else
+		{
+			ft_strdel(&tmp);
+			ft_strdel(&line);
 			program_errors(p, "HEREDOC", true);
+		}
 	}
 	ft_strdel(&tmp);
 	ft_strdel(&line);

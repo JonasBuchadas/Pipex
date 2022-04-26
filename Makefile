@@ -74,4 +74,10 @@ fclean: clean
 
 re: fclean all
 
-.PHONY:	all clean fclean bonus re
+### NORMINETTE ###
+norm:
+	@norminette -R CheckForbiddenSourceHeader $(SRCS_PATH)
+	@norminette -R CheckDefine $(INCL_PATH)
+
+### PHONY RULE ###
+.PHONY:	all bonus clean fclean re norm
