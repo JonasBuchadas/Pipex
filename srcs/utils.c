@@ -21,12 +21,14 @@ void	clear_data(t_pipex *p)
 {
 	if (p->env_paths)
 		ft_strarray_clear(&p->env_paths);
-	close(p->fd_input);
-	close(p->fd_output);
+	if (p->fd_input != -1)
+		close(p->fd_input);
+	if (p->fd_output != -1)
+		close(p->fd_output);
 	close_pipes(p);
 	if (p->limiter)
 		ft_strdel(&p->limiter);
-	if (access("inputstream.txt", X_OK) != -1)
+	if (access("inputstream.txt", F_OK) != -1)
 	{
 		if (unlink("inputstream.txt") == ERROR)
 			usage_error(p, "UNLINKING INPUTSTREAM", false);

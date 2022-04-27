@@ -19,7 +19,7 @@ void	child_process(t_pipex *p, int cmd)
 		p->cmd_args = ft_split(p->argv[p->mode + cmd], ' ');
 		p->cmd = find_command(p->cmd_args[0], p->env_paths);
 		if (!p->cmd || access(p->cmd, F_OK) == ERROR)
-			program_errors(p, "NO CMD", true);
+			program_errors(p, p->cmd_args[0], true);
 		execve(p->cmd, p->cmd_args, p->envp);
 	}
 }
