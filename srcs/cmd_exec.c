@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmd_exec.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jocaetan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/28 09:58:40 by jocaetan          #+#    #+#             */
+/*   Updated: 2022/04/28 09:58:42 by jocaetan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 static char	*find_command(char *cmd, char **paths);
@@ -19,7 +31,7 @@ void	child_process(t_pipex *p, int cmd)
 		p->cmd_args = ft_split(p->argv[p->mode + cmd], ' ');
 		p->cmd = find_command(p->cmd_args[0], p->env_paths);
 		if (!p->cmd || access(p->cmd, F_OK) == ERROR)
-			program_errors(p, p->cmd_args[0], true);
+			command_errors(p, p->cmd_args[0], true);
 		execve(p->cmd, p->cmd_args, p->envp);
 	}
 }

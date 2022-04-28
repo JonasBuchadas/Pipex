@@ -1,6 +1,6 @@
 ### COMPILATION ###
 CC=			gcc
-CFLAGS=		-Wall -Werror -Wextra
+CFLAGS=		-Wall -Werror -Wextra -g
 
 ### EXECUTABLE ###
 NAME=		pipex
@@ -51,12 +51,12 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.c
 all: $(OBJS_PATH) $(OBJS_NAME)
 	@$(LIBFTMAKE)
 	@$(CC) $(CFLAGS) $(OBJS_NAME) $(INC) $(LIBFT) -o $(NAME)
-	@echo -e "$(GREEN)$(NAME) Program created$(DEFAULT)"
+	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
 
 bonus: $(OBJS_PATH) $(OBJS_BONUS)
 	@$(LIBFTMAKE)
 	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(INC) $(LIBFT) -o $(NAME)
-	@echo -e "$(GREEN)$(NAME) Program created$(DEFAULT)"
+	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
 
 $(OBJS_PATH):
 	@mkdir -p $@
@@ -64,19 +64,21 @@ $(OBJS_PATH):
 clean:
 	@make $@ --silent -C $(LIBFT_PATH)
 	@rm -rf $(OBJS_PATH)
-	@echo -e "$(RED)Object files removed$(DEFAULT)"
+	@echo "$(RED)Object files removed$(DEFAULT)"
 
 fclean: clean
 	@make $@ --silent -C $(LIBFT_PATH)
-	@echo -e "$(RED)Libft removed$(DEFAULT)"
+	@echo "$(RED)Libft removed$(DEFAULT)"
 	@rm -f $(NAME)
-	@echo -e "$(RED)$(NAME) Program removed$(DEFAULT)"
+	@echo "$(RED)$(NAME) Program removed$(DEFAULT)"
 
 re: fclean all
 
 ### NORMINETTE ###
 norm:
 	@norminette -R CheckForbiddenSourceHeader $(SRCS_PATH)
+	@norminette -R CheckForbiddenSourceHeader $(INCL_PATH)
+	@norminette -R CheckDefine $(SRCS_PATH)
 	@norminette -R CheckDefine $(INCL_PATH)
 
 ### PHONY RULE ###

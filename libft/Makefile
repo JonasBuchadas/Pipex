@@ -1,6 +1,6 @@
 ### COMPILATION ###
 CC=		gcc
-CFLAGS=	-Wall -Werror -Wextra
+CFLAGS=	-Wall -Werror -Wextra -g
 
 ### LIBRARY ###
 NAME=	libft.a
@@ -107,3 +107,14 @@ fclean: clean
 	@rm -f $(NAME)
 
 re: fclean all
+
+### NORMINETTE ###
+norm:
+	@norminette -R CheckForbiddenSourceHeader $(SRCS_PATH)
+	@norminette -R CheckForbiddenSourceHeader $(INCL_PATH)
+	@norminette -R CheckDefine $(SRCS_PATH)
+	@norminette -R CheckDefine $(INCL_PATH)
+
+### PHONY RULE ###
+.PHONY:	all bonus clean fclean re norm
+

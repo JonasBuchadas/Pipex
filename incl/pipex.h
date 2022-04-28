@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipex.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jocaetan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/04/28 10:04:11 by jocaetan          #+#    #+#             */
+/*   Updated: 2022/04/28 10:04:12 by jocaetan         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PIPEX_H
 # define PIPEX_H
 
@@ -46,5 +58,7 @@ void	open_pipes(t_pipex *p);
 void	close_pipes(t_pipex *p);
 void	dup2_util(t_pipex *p, int fd1, int fd2);
 void	child_process(t_pipex *p, int cmd);
+void	command_errors(t_pipex *p, char *errname, bool stop);
+void	heredoc_errors(t_pipex *p, bool stop);
 
 #endif
