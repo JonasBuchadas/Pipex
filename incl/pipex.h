@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jocaetan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: j <marvin@42.fr>                           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 10:04:11 by jocaetan          #+#    #+#             */
-/*   Updated: 2022/04/28 10:04:12 by jocaetan         ###   ########.fr       */
+/*   Updated: 2022/04/29 15:19:14 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 
 # define WRITE_END 1
 # define READ_END 0
+# define NO_INPUT_FILE 0
 # define CHILD_PROCESS 0
 # define ERROR -1
 # define PIPE 2
@@ -46,19 +47,18 @@ typedef struct s_pipex
 	char	*limiter;
 }			t_pipex;
 
-void	init_data(t_pipex *p, char **argv);
 void	init_pipe_mode(t_pipex *p, int argc, char **argv, char **envp);
 void	init_heredoc_mode(t_pipex *p, int argc, char **argv, char **envp);
 void	clear_data(t_pipex *p);
-void	usage_error(t_pipex *p, char *usage_name, bool stop);
-void	usage_pipex_error(t_pipex *p, char *usage_name, bool stop);
-void	program_errors(t_pipex *p, char *errname, bool stop);
+void	usage_error(t_pipex *p, char *usage_name, bool clear, bool stop);
+void	usage_pipex_error(t_pipex *p, char *usage_name, bool clear, bool stop);
+void	file_error(char *error, char *filename, bool stop);
+void	program_errors(t_pipex *p, char *errname, bool clear, bool stop);
 void	clear_data(t_pipex *p);
 void	open_pipes(t_pipex *p);
 void	close_pipes(t_pipex *p);
 void	dup2_util(t_pipex *p, int fd1, int fd2);
 void	child_process(t_pipex *p, int cmd);
-void	command_errors(t_pipex *p, char *errname, bool stop);
-void	heredoc_errors(t_pipex *p, bool stop);
+void	command_errors(char *errname, bool stop);
 
 #endif

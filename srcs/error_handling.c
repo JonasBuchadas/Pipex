@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   error_handling.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jocaetan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: j <marvin@42.fr>                           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 09:58:47 by jocaetan          #+#    #+#             */
-/*   Updated: 2022/04/28 09:58:51 by jocaetan         ###   ########.fr       */
+/*   Updated: 2022/04/29 15:22:33 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	usage_error(t_pipex *p, char *usage_name, bool stop)
+void	usage_error(t_pipex *p, char *usage_name, bool clear, bool stop)
 {
 	if (ft_strequal(usage_name, "USAGE"))
 	{
@@ -33,14 +33,13 @@ void	usage_error(t_pipex *p, char *usage_name, bool stop)
 	}
 	else
 		perror(usage_name);
-	if (stop)
-	{
+	if (clear)
 		clear_data(p);
+	if (stop)
 		exit(EXIT_FAILURE);
-	}
 }
 
-void	usage_pipex_error(t_pipex *p, char *usage_name, bool stop)
+void	usage_pipex_error(t_pipex *p, char *usage_name, bool clear, bool stop)
 {
 	if (ft_strequal(usage_name, "USAGE"))
 	{
@@ -53,43 +52,42 @@ void	usage_pipex_error(t_pipex *p, char *usage_name, bool stop)
 	}
 	else
 		perror(usage_name);
-	if (stop)
-	{
+	if (clear)
 		clear_data(p);
+	if (stop)
 		exit(EXIT_FAILURE);
-	}
 }
 
-void	program_errors(t_pipex *p, char *errname, bool stop)
+void	program_errors(t_pipex *p, char *errname, bool clear, bool stop)
 {
 	perror(errname);
-	if (stop)
-	{
+	if (clear)
 		clear_data(p);
+	if (stop)
 		exit(EXIT_FAILURE);
-	}
 }
 
-void	command_errors(t_pipex *p, char *errname, bool stop)
+void	command_errors(char *errname, bool stop)
 {
 	char	*line;
 
-	line = ft_strjoin("Command not found: ", errname);
+	line = ft_strjoin("pipex: command not found: ", errname);
 	ft_putendl_fd(line, 2);
 	ft_strdel(&line);
 	if (stop)
-	{
-		clear_data(p);
 		exit(EXIT_FAILURE);
-	}
 }
 
-void	heredoc_errors(t_pipex *p, bool stop)
+void	file_error(char *error, char *filename, bool stop)
 {
-	ft_putendl_fd("LIMITER not found in here_doc", 2);
+	char	*line;
+
+	if (ft_strequal(error, "NO FILE"))
+		line = ft_strjoin("pipex: no such file or directory: ", filename);
+	else
+		line = ft_strjoin("pipex: permission denied: ", filename);
+	ft_putendl_fd(line, 2);
+	ft_strdel(&line);
 	if (stop)
-	{
-		clear_data(p);
 		exit(EXIT_FAILURE);
-	}
 }

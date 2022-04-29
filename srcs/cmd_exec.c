@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_exec.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jocaetan <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: j <marvin@42.fr>                           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 09:58:40 by jocaetan          #+#    #+#             */
-/*   Updated: 2022/04/28 09:58:42 by jocaetan         ###   ########.fr       */
+/*   Updated: 2022/04/29 13:29:51 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	child_process(t_pipex *p, int cmd)
 {
 	p->pid_cmd = fork();
 	if (p->pid_cmd == ERROR)
-		program_errors(p, "FORK", true);
+		program_errors(p, "FORK", true, true);
 	if (p->pid_cmd == CHILD_PROCESS)
 	{
 		if (cmd == 0)
@@ -31,7 +31,7 @@ void	child_process(t_pipex *p, int cmd)
 		p->cmd_args = ft_split(p->argv[p->mode + cmd], ' ');
 		p->cmd = find_command(p->cmd_args[0], p->env_paths);
 		if (!p->cmd || access(p->cmd, F_OK) == ERROR)
-			command_errors(p, p->cmd_args[0], true);
+			command_errors(p->cmd_args[0], true);
 		execve(p->cmd, p->cmd_args, p->envp);
 	}
 }

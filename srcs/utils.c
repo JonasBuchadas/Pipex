@@ -6,28 +6,11 @@
 /*   By: j <marvin@42.fr>                           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 09:59:15 by jocaetan          #+#    #+#             */
-/*   Updated: 2022/04/28 11:39:19 by j                ###   ########.fr       */
+/*   Updated: 2022/04/29 13:12:51 by j                ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	init_data(t_pipex *p, char **argv)
-{
-	p->cmd_args = NULL;
-	p->cmd = NULL;
-	p->env_paths = NULL;
-	p->n_cmds = 0;
-	p->fd_input = -1;
-	p->fd_output = -1;
-	p->pipes = NULL;
-	p->pid_cmd = -1;
-	if (ft_strequal(argv[1], "here_doc"))
-		p->mode = HERE_DOC;
-	else
-		p->mode = PIPE;
-	p->limiter = NULL;
-}
 
 void	clear_data(t_pipex *p)
 {
@@ -43,7 +26,7 @@ void	clear_data(t_pipex *p)
 	if (access("inputstream.txt", F_OK) != -1)
 	{
 		if (unlink("inputstream.txt") == ERROR)
-			usage_error(p, "UNLINKING INPUTSTREAM", false);
+			usage_error(p, "UNLINKING INPUTSTREAM", false, true);
 	}
 }
 
@@ -55,7 +38,7 @@ void	open_pipes(t_pipex *p)
 	while (++i < p->n_cmds - 1)
 	{
 		if (pipe(p->pipes + 2 * i) == ERROR)
-			program_errors(p, "OPENING PIPES", true);
+			program_errors(p, "OPENING PIPES", true, true);
 	}
 }
 
@@ -78,7 +61,7 @@ void	close_pipes(t_pipex *p)
 void	dup2_util(t_pipex *p, int read_end, int write_end)
 {
 	if (dup2(read_end, STDIN_FILENO) == ERROR)
-		program_errors(p, "DUP2", true);
+		program_errors(p, "DUP2", true, true);
 	if (dup2(write_end, STDOUT_FILENO) == ERROR)
-		program_errors(p, "DUP2", true);
+		program_errors(p, "DUP2", true, true);
 }

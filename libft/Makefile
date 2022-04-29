@@ -1,6 +1,6 @@
 ### COMPILATION ###
 CC=		gcc
-CFLAGS=	-Wall -Werror -Wextra -g
+CFLAGS=	-Wall -Werror -Wextra
 
 ### LIBRARY ###
 NAME=	libft.a

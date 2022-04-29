@@ -1,6 +1,6 @@
 ### COMPILATION ###
 CC=			gcc
-CFLAGS=		-Wall -Werror -Wextra -g
+CFLAGS=		-Wall -Werror -Wextra
 
 ### EXECUTABLE ###
 NAME=		pipex
@@ -48,14 +48,16 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.c
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 
 ### ACTIVE RULES ###
-all: $(OBJS_PATH) $(OBJS_NAME)
-	@$(LIBFTMAKE)
-	@$(CC) $(CFLAGS) $(OBJS_NAME) $(INC) $(LIBFT) -o $(NAME)
-	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
+all: $(NAME)
 
 bonus: $(OBJS_PATH) $(OBJS_BONUS)
 	@$(LIBFTMAKE)
 	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(INC) $(LIBFT) -o $(NAME)
+	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
+
+$(NAME): $(OBJS_PATH) $(OBJS_NAME)
+	@$(LIBFTMAKE)
+	@$(CC) $(CFLAGS) $(OBJS_NAME) $(INC) $(LIBFT) -o $(NAME)
 	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
 
 $(OBJS_PATH):
