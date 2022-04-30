@@ -1,9 +1,12 @@
-### COMPILATION ###
-CC=			gcc
-CFLAGS=		-Wall -Werror -Wextra
+### OPERATING SYSTEM ###
+OS=			$(shell uname -s)
 
 ### EXECUTABLE ###
 NAME=		pipex
+
+### COMPILATION ###
+CC=			gcc
+CFLAGS=		-Wall -Werror -Wextra
 
 ### PATHS ###
 LIBFT_PATH=	./libft/
@@ -36,9 +39,14 @@ LIBFT=      -L$(LIBFT_PATH) -lft
 INC=		-I $(LIBFT_PATH)$(INCL_PATH) -I $(INCL_PATH)
 
 ### COLOURS ###
-GREEN= \033[1;32m
-RED= \033[1;31m
-DEFAULT= \033[0m
+ifeq ($(OS), Linux)
+	ECHO=	echo -e "
+else
+	ECHO=	echo "
+endif
+GREEN= $(addprefix $(ECHO), \033[1;32m)
+RED= $(addprefix $(ECHO), \033[1;31m)
+DEFAULT= \033[0m"
 
 ### IMPLICT RULES ###
 %.o: %.c
@@ -53,12 +61,12 @@ all: $(NAME)
 bonus: $(OBJS_PATH) $(OBJS_BONUS)
 	@$(LIBFTMAKE)
 	@$(CC) $(CFLAGS) $(OBJS_BONUS) $(INC) $(LIBFT) -o $(NAME)
-	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
+	@$(GREEN)$(NAME) Program created$(DEFAULT)
 
 $(NAME): $(OBJS_PATH) $(OBJS_NAME)
 	@$(LIBFTMAKE)
 	@$(CC) $(CFLAGS) $(OBJS_NAME) $(INC) $(LIBFT) -o $(NAME)
-	@echo "$(GREEN)$(NAME) Program created$(DEFAULT)"
+	@$(GREEN)$(NAME) Program created$(DEFAULT)
 
 $(OBJS_PATH):
 	@mkdir -p $@
@@ -66,13 +74,13 @@ $(OBJS_PATH):
 clean:
 	@make $@ --silent -C $(LIBFT_PATH)
 	@rm -rf $(OBJS_PATH)
-	@echo "$(RED)Object files removed$(DEFAULT)"
+	@$(RED)Object files removed$(DEFAULT)
 
 fclean: clean
 	@make $@ --silent -C $(LIBFT_PATH)
-	@echo "$(RED)Libft removed$(DEFAULT)"
+	@$(RED)Libft removed$(DEFAULT)
 	@rm -f $(NAME)
-	@echo "$(RED)$(NAME) Program removed$(DEFAULT)"
+	@$(RED)$(NAME) Program removed$(DEFAULT)
 
 re: fclean all
 

@@ -41,7 +41,7 @@ void	init_heredoc_mode(t_pipex *p, int argc, char **argv, char **envp)
 {
 	int	file;
 
-	file = open("inputstream.txt", O_WRONLY | O_CREAT, 0644);
+	file = open(".inputstream.txt", O_WRONLY | O_CREAT, 0644);
 	if (file == ERROR)
 		usage_error(p, "OPENING INPUTSTREAM", true, true);
 	p->fd_output = open(argv[argc - 1], O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -50,7 +50,7 @@ void	init_heredoc_mode(t_pipex *p, int argc, char **argv, char **envp)
 	p->limiter = ft_strdup(argv[2]);
 	here_doc(p, file);
 	close(file);
-	p->fd_input = open("inputstream.txt", O_RDONLY);
+	p->fd_input = open(".inputstream.txt", O_RDONLY);
 	if (p->fd_input < 0)
 		program_errors(p, "HEREDOC", true, true);
 	command_paths(p, envp);

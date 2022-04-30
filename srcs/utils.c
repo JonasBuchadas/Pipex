@@ -23,9 +23,9 @@ void	clear_data(t_pipex *p)
 	close_pipes(p);
 	if (p->limiter)
 		ft_strdel(&p->limiter);
-	if (access("inputstream.txt", F_OK) != -1)
+	if (access(".inputstream.txt", F_OK) != -1)
 	{
-		if (unlink("inputstream.txt") == ERROR)
+		if (unlink(".inputstream.txt") == ERROR)
 			usage_error(p, "UNLINKING INPUTSTREAM", false, true);
 	}
 }
